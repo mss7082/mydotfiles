@@ -17,13 +17,14 @@
 ;; Enable evil mode
 (require 'evil)
 (evil-mode 1)
+(evilnc-default-hotkeys)
 
 ;; TODO Sequence
 (setq org-todo-keywords
   '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
 
 ;; Keyboard-centric user interface
-(setq inhibit-startup-message t)
+;;(setq inhibit-startup-message t)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
@@ -65,3 +66,32 @@
 (global-set-key (kbd "C-x l") 'counsel-locate)
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+
+;;Org bullets
+(require 'org-bullets)
+(add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
+;; Company
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;Projectile
+(projectile-mode +1)
+(define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+;;Rainbow Delimiters
+(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+
+;;LSP Config
+(require 'lsp-mode)
+(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'haskell-mode-hook #'lsp)
+(add-hook 'haskell-literate-mode-hook #'lsp)
+
+
+;;Haskell
+(push "~/.elib/contrib/reformatter.el" load-path)
+(push "~/.elib/contrib/ormolu.el" load-path)
+(require 'reformatter)
+(load-library "ormolu")
+(add-hook 'haskell-mode-hook 'ormolu-format-on-save-mode)

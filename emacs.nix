@@ -35,6 +35,13 @@ in
    ivy
    counsel
    swiper
+   org-bullets
+   company
+   projectile
+   evil-nerd-commenter
+   rainbow-delimiters
+   ormolu
+   reformatter
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
