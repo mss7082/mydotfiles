@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./ledger.nix
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -62,11 +63,14 @@
   # Enable touchpad support (enabled default in most desktopManager).
   services.xserver.libinput.enable = true;
 
+  # New group for Ledger
+  users.groups.plugdev = {};
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.moses = {
     isNormalUser = true;
     shell = pkgs.fish;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "plugdev" ]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
@@ -90,6 +94,8 @@
     cointop
     discord
     qutebrowser
+    vlc
+    ledger-live-desktop
   ];
 
   nixpkgs.config.allowUnfree = true;

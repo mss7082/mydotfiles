@@ -42,6 +42,7 @@ in
    rainbow-delimiters
    ormolu
    reformatter
+   helm-lsp
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
