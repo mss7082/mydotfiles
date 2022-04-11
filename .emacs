@@ -90,8 +90,14 @@
 
 
 ;;Haskell
+(require 'reformatter)
 (push "~/.elib/contrib/reformatter.el" load-path)
 (push "~/.elib/contrib/ormolu.el" load-path)
-(require 'reformatter)
 (load-library "ormolu")
 (add-hook 'haskell-mode-hook 'ormolu-format-on-save-mode)
+
+;; This determines the style of line numbers in effect. If set to `nil', line
+;; numbers are disabled. For relative line numbers, set this to `relative'.
+;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(global-display-line-numbers-mode)
+(setq display-line-numbers-type 'relative)
