@@ -17,6 +17,7 @@
 
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.networkmanager.enable = true; #Activate wifi with "nmcli device wifi connect <SSID> password <password>
 
   # Set your time zone.
   time.timeZone = "Europe/Dublin";
@@ -44,8 +45,15 @@
 
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  #services.xserver.displayManager.gdm.enable = true;
+  #services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.windowManager = {
+    xmonad = {
+      enable = true;
+      enableContribAndExtras = true;
+      };
+    };
+
   
 
   # Configure keymap in X11
@@ -70,7 +78,7 @@
   users.users.moses = {
     isNormalUser = true;
     shell = pkgs.fish;
-    extraGroups = [ "wheel" "plugdev" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "plugdev" "networkmanager" ]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
@@ -78,6 +86,10 @@
   environment.systemPackages = with pkgs; [
     (import ./emacs.nix { inherit pkgs; })
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    dmenu
+    xmobar
+    nitrogen
+    picom
     wget
     firefox
     libreoffice
@@ -122,6 +134,17 @@
   #Enable Flatpak
   services.flatpak.enable = true;
 
+  #Enable xdg desktop Integration for flatpak
+  xdg = {
+  portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-wlr
+      xdg-desktop-portal-gtk
+    ];
+    gtkUsePortal = true;
+           };
+        };
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
