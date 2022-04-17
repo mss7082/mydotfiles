@@ -98,12 +98,53 @@ myWorkspaces = [ Node "Web"       -- for everyday activity's
                    [ Node "Browser" []   --  with 4 extra sub-workspaces, for even more activity's
                    , Node "Chat" []
                    , Node "Email" []
+                   , Node "Ada" []
                    ]
-               , Node "Programming" -- for all your programming needs
-                   [ Node "Haskell" []
-                   , Node "Docs"    [] -- documentation
-                   ]
+               , Node "Dev" []
+               , Node "Networking" [] -- for all your networking needs
+               , Node "Misc" [] -- for all your networking needs
                ]
+
+-- Tree Workspaces config 
+myTreeConfig = TSConfig { ts_hidechildren = True
+                           , ts_background   = 0xc0c0c0c0
+                           , ts_font         = "xft:Sans-16"
+                           , ts_node         = (0xff000000, 0xff50d0db)
+                           , ts_nodealt      = (0xff000000, 0xff10b8d6)
+                           , ts_highlight    = (0xffffffff, 0xffff0000)
+                           , ts_extra        = 0xff000000
+                           , ts_node_width   = 200
+                           , ts_node_height  = 30
+                           , ts_originX      = 0
+                           , ts_originY      = 0
+                           , ts_indent       = 80
+                           , ts_navigate     = myTreeNavigation
+                           }
+
+
+-- Tree Workspace Navigation
+myTreeNavigation = M.fromList
+    [ ((0, xK_Escape), cancel)
+    , ((0, xK_Return), select)
+    , ((0, xK_space),  select)
+    , ((0, xK_Up),     movePrev)
+    , ((0, xK_Down),   moveNext)
+    , ((0, xK_Left),   moveParent)
+    , ((0, xK_Right),  moveChild)
+    , ((0, xK_k),      movePrev)
+    , ((0, xK_j),      moveNext)
+    , ((0, xK_h),      moveParent)
+    , ((0, xK_l),      moveChild)
+    , ((0, xK_o),      moveHistBack)
+    , ((0, xK_i),      moveHistForward)
+    , ((0, xK_b),      moveTo ["Web", "Browser"])
+    , ((0, xK_c),      moveTo ["Web", "Chat"])
+    , ((0, xK_e),      moveTo ["Web", "Email"])
+    , ((0, xK_a),      moveTo ["Web", "Ada"])
+    , ((0, xK_n),      moveTo ["Networking"])
+    , ((0, xK_d),      moveTo ["Dev"])
+    , ((0, xK_m),      moveTo ["Misc"])
+    ]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -215,8 +256,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     ++
     -- TreeSelect Workspaces
-    [((modm, xK_f), treeselectWorkspace tsDefaultConfig myWorkspaces W.greedyView)
-    ,((modm .|. shiftMask, xK_f), treeselectWorkspace tsDefaultConfig myWorkspaces W.shift)
+    [((modm, xK_f), treeselectWorkspace myTreeConfig myWorkspaces W.greedyView)
+    ,((modm .|. shiftMask, xK_f), treeselectWorkspace myTreeConfig myWorkspaces W.shift)
     ]
 
 
