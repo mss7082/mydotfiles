@@ -9,15 +9,21 @@
 
 import XMonad
 import Data.Monoid
+import Data.Tree
 import System.Exit
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run
-import XMonad.Hooks.ManageDocks
 import Graphics.X11.ExtraTypes.XF86
+
 
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import Data.Maybe (fromJust)
+
+-- Hooks 
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.WorkspaceHistory
+
 
 -- Layouts modifiers
 import XMonad.Layout.LayoutModifier
@@ -33,8 +39,6 @@ import XMonad.Layout.WindowArranger (windowArrange, WindowArrangerMsg(..))
 import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 
-
-
 -- Layouts
 import XMonad.Layout.Spiral
 import XMonad.Layout.Tabbed
@@ -42,6 +46,7 @@ import XMonad.Layout.SimplestFloat
 
 -- Actions
 import XMonad.Actions.MouseResize
+import XMonad.Actions.TreeSelect
 
 
 -- The preferred terminal program, which is used in a binding below and by
@@ -76,7 +81,7 @@ mySpacing' i = spacingRaw True (Border i i i i) True (Border i i i i) True
 -- ("right alt"), which does not conflict with emacs keybindings. The
 -- "windows key" is usually mod4Mask.
 --
-myModMask       = mod4Mask
+myModMask       = mod1Mask
 
 -- The default number of workspaces (virtual screens) and their names.
 -- By default we use numeric strings, but any string may be used as a
@@ -88,12 +93,17 @@ myModMask       = mod4Mask
 -- > workspaces = ["web", "irc", "code" ] ++ map show [4..9]
 --
 --myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
-myWorkspaces = [" web ", " chat ", " dev ", " sys ", " vid ", " mus ", " doc ", " vbox ", " gfx "]
-myWorkspaceIndices = M.fromList $ zipWith (,) myWorkspaces [1..] -- (,) == \x y -> (x,y)
-
-clickable ws = "<action=xdotool key super+"++show i++">"++ws++"</action>"
-    where i = fromJust $ M.lookup ws myWorkspaceIndices
-
+myWorkspaces :: Forest String
+myWorkspaces = [ Node "Web"       -- for everyday activity's
+                   [ Node "Browser" []   --  with 4 extra sub-workspaces, for even more activity's
+                   , Node "Chat" []
+                   , Node "Email" []
+                   ]
+               , Node "Programming" -- for all your programming needs
+                   [ Node "Haskell" []
+                   , Node "Docs"    [] -- documentation
+                   ]
+               ]
 
 -- Border colors for unfocused and focused windows, respectively.
 --
@@ -201,6 +211,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [((0, xF86XK_AudioRaiseVolume       ), spawn "pactl set-sink-volume 0 +1.5%")
     ,((0, xF86XK_AudioLowerVolume       ), spawn "pactl set-sink-volume 0 -1.5%")
     ,((0, xF86XK_AudioMute              ), spawn "pactl set-sink-mute 0 toggle")
+    ]
+
+    ++
+    -- TreeSelect Workspaces
+    [((modm, xK_f), treeselectWorkspace tsDefaultConfig myWorkspaces W.greedyView)
+    ,((modm .|. shiftMask, xK_f), treeselectWorkspace tsDefaultConfig myWorkspaces W.shift)
     ]
 
 
@@ -317,7 +333,7 @@ myEventHook = mempty
 -- Perform an arbitrary action on each internal state change or X event.
 -- See the 'XMonad.Hooks.DynamicLog' extension for examples.
 --
-myLogHook = return ()
+--myLogHook = return ()
 
 ------------------------------------------------------------------------
 -- Startup hook
@@ -354,7 +370,7 @@ defaults = def {
         clickJustFocuses   = myClickJustFocuses,
         borderWidth        = myBorderWidth,
         modMask            = myModMask,
-        workspaces         = myWorkspaces,
+        workspaces         = toWorkspaces myWorkspaces,
         normalBorderColor  = myNormalBorderColor,
         focusedBorderColor = myFocusedBorderColor,
 
@@ -366,7 +382,8 @@ defaults = def {
         layoutHook         = myLayout,
         manageHook         = myManageHook,
         handleEventHook    = myEventHook,
-        logHook            = myLogHook,
+        --logHook            = myLogHook,
+        logHook            = workspaceHistoryHook,
         startupHook        = myStartupHook
     }
 

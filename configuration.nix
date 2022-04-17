@@ -93,6 +93,10 @@
     wget
     firefox
     libreoffice
+    blueman
+    bluez
+    maim
+    light
     gnome3.gnome-system-monitor
     authy
     dig
@@ -125,6 +129,15 @@
   #   enable = true;
   #   enableSSHSupport = true;
   # };
+  # Backlight for display
+  programs.light.enable = true;
+  services.actkbd = {
+    enable = true;
+    bindings = [
+      { keys = [ 225 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -A 3"; }
+      { keys = [ 224 ]; events = [ "key" ]; command = "/run/current-system/sw/bin/light -U 3"; }
+    ];
+  };
 
   # List services that you want to enable:
 
