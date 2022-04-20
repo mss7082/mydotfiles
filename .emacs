@@ -6,13 +6,24 @@
  '(custom-enabled-themes '(zerodark))
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "7eabdf26ddc6af7225638e343553435d862a82237481b7ce35a739a54a374607" default))
- '(font-use-system-font t))
+ '(font-use-system-font t)
+ '(smtpmail-smtp-server "localhost")
+ '(smtpmail-smtp-service 1025))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+
+(require 'package)
+
+;; optional. makes unpure packages archives unavailable
+(setq package-archives nil)
+
+(setq package-enable-at-startup nil)
+(package-initialize)
 
 ;; Enable evil mode
 (require 'evil)
@@ -101,3 +112,56 @@
 ;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
+
+;;Undo across sessions
+(global-undo-fu-session-mode)
+
+;;Startup Dashboard
+(require 'dashboard)
+(dashboard-setup-startup-hook)
+
+(add-to-list 'load-path "/nix/store/29drn9jg4riar14mw4ndpcw3iz0zrp2w-system-path/share/emacs/site-lisp/mu4e")
+(require 'mu4e)
+;; use mu4e for e-mail in emacs
+(setq mail-user-agent 'mu4e-user-agent)
+(setq mu4e-change-filenames-when-moving t ; avoid sync conflicts
+      mu4e-update-interval (* 10 60) ; check mail 10 minutes
+      mu4e-compose-format-flowed t ; re-flow mail so it's not hard wrapped
+      mu4e-get-mail-command "mbsync -a"
+      mu4e-maildir "~/mail/proton")
+
+(setq mu4e-drafts-folder "/Drafts"
+      mu4e-sent-folder   "/Sent"
+      mu4e-refile-folder "/All Mail"
+      mu4e-trash-folder  "/Trash")
+
+(setq mu4e-maildir-shortcuts
+      '(("/proton/inbox"     . ?i)
+	("/proton/Sent"      . ?s)
+	("/proton/Trash"     . ?t)
+	("/proton/Drafts"    . ?d)
+	("/proton/All Mail"  . ?a)))
+
+;;(setq message-send-mail-function 'smtpmail-send-it
+;;      auth-sources '("~/.authinfo") ;need to use gpg version but only local smtp stored for now
+;;      smtpmail-smtp-server "localhost"
+;;      smtpmail-smtp-service 1025
+;;      smtpmail-stream-type  'ssl))
+
+(setq send-mail-function 'smtpmail-send-it)
+;; Send mail using SMTP via mail.example.org.
+(setq smtpmail-smtp-server "localhost")
+;; Send mail using SMTP on the mail submission port 587.
+(setq smtpmail-smtp-service 1025)
+(setq smtpmail-stream-type 'starttls)
+
+;; general emacs mail settings; used when composing e-mail
+;; the non-mu4e-* stuff is inherited from emacs/message-mode
+(setq mu4e-compose-reply-to-address "moses@sokabi.me"
+      user-mail-address "moses@sokabi.me"
+      user-full-name  "Moses S. Sokabi")
+(setq mu4e-compose-signature
+   "Regards,\nMoses\n")
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)

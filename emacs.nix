@@ -43,6 +43,11 @@ in
    ormolu
    reformatter
    helm-lsp
+   pdf-tools
+   yaml-mode
+   nix-mode
+   undo-fu-session
+   dashboard
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode

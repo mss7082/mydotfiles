@@ -112,6 +112,15 @@
     qutebrowser
     vlc
     ledger-live-desktop
+    foxitreader
+    xclip
+    isync
+    mu
+    exercism
+    haskell-language-server
+    ghc
+    cabal-install
+    stack
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -146,6 +155,9 @@
 
   #Enable Flatpak
   services.flatpak.enable = true;
+
+  #Enable gnome-keyring
+  services.gnome.gnome-keyring.enable = true;
 
   #Enable xdg desktop Integration for flatpak
   xdg = {

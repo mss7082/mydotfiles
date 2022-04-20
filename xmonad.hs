@@ -260,6 +260,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ,((modm .|. shiftMask, xK_f), treeselectWorkspace myTreeConfig myWorkspaces W.shift)
     ]
 
+    ++
+    -- PrintScreen Binding
+    --[((0, xK_Print), spawn "scrot -q 1 $HOME/pictures/screenshots/%Y-%m-%d-%H:%M:%S.png")]
+    [((0, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")]
+
 
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
@@ -394,8 +399,7 @@ myStartupHook = do
 -- Run xmonad with the settings you specify. No need to modify this.
 --
 main = do
-  --xmproc <- spawnPipe "xmobar -x 0 ~/.config/xmobar/xmobarrc"
-  xmproc <- spawnPipe "xmobar ~/.config/xmobar/xmobarrc"
+  xmproc <- spawnPipe "xmobar -x 0 ~/.config/xmobar/xmobarrc"
   xmonad $ docks defaults
 
 -- A structure containing your configuration settings, overriding
