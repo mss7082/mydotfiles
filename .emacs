@@ -132,15 +132,15 @@
 
 (setq mu4e-drafts-folder "/Drafts"
       mu4e-sent-folder   "/Sent"
-      mu4e-refile-folder "/All Mail"
+      mu4e-refile-folder "/Archive"
       mu4e-trash-folder  "/Trash")
 
 (setq mu4e-maildir-shortcuts
-      '(("/proton/inbox"     . ?i)
-	("/proton/Sent"      . ?s)
-	("/proton/Trash"     . ?t)
-	("/proton/Drafts"    . ?d)
-	("/proton/All Mail"  . ?a)))
+      '(("/inbox"     . ?i)
+	("/Sent"      . ?s)
+	("/Trash"     . ?t)
+	("/Drafts"    . ?d)
+	("/Archive"  . ?a)))
 
 ;;(setq message-send-mail-function 'smtpmail-send-it
 ;;      auth-sources '("~/.authinfo") ;need to use gpg version but only local smtp stored for now
@@ -157,8 +157,8 @@
 
 ;; general emacs mail settings; used when composing e-mail
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-compose-reply-to-address "xxxxx@xxxxxxx"
-      user-mail-address "xxxxxxx@xxxxxx"
+(setq mu4e-compose-reply-to-address "moses@sokabi.me"
+      user-mail-address "moses@sokabi.me"
       user-full-name  "Moses S. Sokabi")
 (setq mu4e-compose-signature
    "Regards,\nMoses\n")

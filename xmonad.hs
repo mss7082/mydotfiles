@@ -43,6 +43,9 @@ import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBO
 import XMonad.Layout.Spiral
 import XMonad.Layout.Tabbed
 import XMonad.Layout.SimplestFloat
+import XMonad.Layout.GridVariants (Grid(Grid))
+import XMonad.Layout.ThreeColumns
+import XMonad.Layout.ResizableTile
 
 -- Actions
 import XMonad.Actions.MouseResize
@@ -265,6 +268,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --[((0, xK_Print), spawn "scrot -q 1 $HOME/pictures/screenshots/%Y-%m-%d-%H:%M:%S.png")]
     [((0, xK_Print), spawn "maim -s | xclip -selection clipboard -t image/png")]
 
+    ++
+    -- ResizableTall keys
+    [((modm, xK_Left),  sendMessage MirrorExpand)
+    ,((modm, xK_Up),    sendMessage MirrorExpand)
+    ,((modm, xK_Right), sendMessage MirrorShrink)
+    ,((modm, xK_Down),  sendMessage MirrorShrink)
+    ]
+
 
 ------------------------------------------------------------------------
 -- Mouse bindings: default actions bound to mouse events
@@ -291,6 +302,13 @@ myMouseBindings (XConfig {XMonad.modMask = modm}) = M.fromList $
 -- Defining a bunch of layouts, many that I don't use.
 -- limitWindows n sets maximum number of windows displayed for layout.
 -- mySpacing n sets the gap size around the windows.
+tall     = renamed [Replace "tall"]
+           $ smartBorders
+           $ windowNavigation
+           $ subLayout [] (smartBorders Simplest)
+           $ limitWindows 12
+           $ mySpacing 8
+           $ ResizableTall 1 (3/100) (1/2) []
 spirals  = renamed [Replace "spirals"]
            $ smartBorders
            $ windowNavigation
@@ -302,6 +320,20 @@ monocle  = renamed [Replace "monocle"]
            $ windowNavigation
            $ subLayout [] (smartBorders Simplest)
            $ limitWindows 20 Full
+grid     = renamed [Replace "grid"]
+           $ smartBorders
+           $ windowNavigation
+           $ subLayout [] (smartBorders Simplest)
+           $ limitWindows 12
+           $ mySpacing 4
+           $ mkToggle (single MIRROR)
+           $ Grid (16/10)
+threeCol = renamed [Replace "threeCol"]
+           $ smartBorders
+           $ windowNavigation
+           $ subLayout [] (smartBorders Simplest)
+           $ limitWindows 7
+           $ ThreeCol 1 (3/100) (1/2)
 floats   = renamed [Replace "floats"]
            $ smartBorders
            $ limitWindows 20 simplestFloat
@@ -323,8 +355,11 @@ floats   = renamed [Replace "floats"]
 myLayout = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
              where
-               myDefaultLayout =     withBorder myBorderWidth spirals
+               myDefaultLayout =     withBorder myBorderWidth tall
+                                 ||| spirals
                                  ||| noBorders monocle
+                                 ||| grid
+                                 ||| threeCol
                                  ||| floats
 
 --myLayout = avoidStruts (tiled ||| Mirror tiled ||| Full)
