@@ -40,11 +40,7 @@ import XMonad.Layout.MultiToggle (mkToggle, single, EOT(EOT), (??))
 import XMonad.Layout.MultiToggle.Instances (StdTransformers(NBFULL, MIRROR, NOBORDERS))
 
 -- Layouts
-import XMonad.Layout.Spiral
-import XMonad.Layout.Tabbed
-import XMonad.Layout.SimplestFloat
 import XMonad.Layout.GridVariants (Grid(Grid))
-import XMonad.Layout.ThreeColumns
 import XMonad.Layout.ResizableTile
 
 -- Actions
@@ -309,12 +305,6 @@ tall     = renamed [Replace "tall"]
            $ limitWindows 12
            $ mySpacing 8
            $ ResizableTall 1 (3/100) (1/2) []
-spirals  = renamed [Replace "spirals"]
-           $ smartBorders
-           $ windowNavigation
-           $ subLayout [] (smartBorders Simplest)
-           $ mySpacing' 4
-           $ spiral (6/7)
 monocle  = renamed [Replace "monocle"]
            $ smartBorders
            $ windowNavigation
@@ -328,19 +318,6 @@ grid     = renamed [Replace "grid"]
            $ mySpacing 4
            $ mkToggle (single MIRROR)
            $ Grid (16/10)
-threeCol = renamed [Replace "threeCol"]
-           $ smartBorders
-           $ windowNavigation
-           $ subLayout [] (smartBorders Simplest)
-           $ limitWindows 7
-           $ ThreeCol 1 (3/100) (1/2)
-floats   = renamed [Replace "floats"]
-           $ smartBorders
-           $ limitWindows 20 simplestFloat
-
-
-
-
 
 
 -- You can specify and transform your layouts by modifying these values.
@@ -352,15 +329,12 @@ floats   = renamed [Replace "floats"]
 -- which denotes layout choice.
 --
 
-myLayout = avoidStruts $ mouseResize $ windowArrange $ T.toggleLayouts floats
+myLayout = avoidStruts $ mouseResize $ windowArrange
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
              where
                myDefaultLayout =     withBorder myBorderWidth tall
-                                 ||| spirals
-                                 ||| noBorders monocle
                                  ||| grid
-                                 ||| threeCol
-                                 ||| floats
+                                 ||| noBorders monocle
 
 --myLayout = avoidStruts (tiled ||| Mirror tiled ||| Full)
 --  where
