@@ -16,8 +16,13 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-  networking.networkmanager.enable = true; #Activate wifi with "nmcli device wifi connect <SSID> password <password>
+  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+ # networking.networkmanager.enable = true; #Activate wifi with "nmcli device wifi connect <SSID> password <password>
+ networking.wireless.networks = {
+  "Searching..." = {
+    pskRaw = "b8ea9095abc9bce69d3d786b06d0defcac891247df7e1f584ca1b9c02bf37780";
+  };
+};
 
   # Set your time zone.
   time.timeZone = "Europe/Dublin";
@@ -63,6 +68,11 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+  services.printing.drivers = [ pkgs.hplip ]; 
+
+  # Enable Bluetooth Services
+  services.blueman.enable = true;
+  hardware.bluetooth.enable = true;
 
   # Enable sound.
   sound.enable = true;
@@ -93,8 +103,6 @@
     wget
     firefox
     libreoffice
-    blueman
-    bluez
     maim
     light
     gnome3.gnome-system-monitor
@@ -121,6 +129,7 @@
     ghc
     cabal-install
     stack
+    ormolu
   ];
 
   nixpkgs.config.allowUnfree = true;

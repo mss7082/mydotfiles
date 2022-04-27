@@ -157,11 +157,52 @@
 
 ;; general emacs mail settings; used when composing e-mail
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-compose-reply-to-address "moses@sokabi.me"
-      user-mail-address "moses@sokabi.me"
-      user-full-name  "Moses S. Sokabi")
+(setq mu4e-compose-reply-to-address "moses@example.com"
+      user-mail-address "moses@example.com"
+      user-full-name  "Moses S.")
 (setq mu4e-compose-signature
    "Regards,\nMoses\n")
 
 ;; don't keep message buffers around
 (setq message-kill-buffer-on-exit t)
+
+
+;;Org Mime
+(require 'org-mime)
+(setq org-mime-library 'mml)
+
+(add-hook 'message-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c M-o") 'org-mime-htmlize)))
+(add-hook 'org-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-c M-o") 'org-mime-org-buffer-htmlize)))
+
+
+
+(add-hook 'org-mime-html-hook
+	  (lambda ()
+	    (org-mime-change-element-style
+	     "pre" (format "color: %s; background-color: %s; padding: 0.5em;"
+			   "#E6E1DC" "#232323"))))
+
+;; the following can be used to nicely offset block quotes in email bodies
+(add-hook 'org-mime-html-hook
+	  (lambda ()
+	    (org-mime-change-element-style
+	     "blockquote" "border-left: 2px solid gray; padding-left: 4px;")))
+
+(add-hook 'org-mime-html-hook
+	  (lambda ()
+	    (while (re-search-forward "#\\([^#]*\\)#" nil t)
+	      (replace-match "<span style=\"color:red\">\\1</span>"))))
+
+;;Or just setup your export options in org buffer/subtree.
+;;org-mime-export-options will override your export options if it’s NOT nil.
+(setq org-mime-export-options '(:with-latex dvipng
+:section-numbers nil
+:with-author nil
+:with-toc nil))
+
+
+(pdf-loader-install) ; On demand loading, leads to faster startup time

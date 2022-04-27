@@ -48,6 +48,7 @@ in
    nix-mode
    undo-fu-session
    dashboard
+   org-mime
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
