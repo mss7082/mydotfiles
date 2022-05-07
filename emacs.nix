@@ -49,6 +49,7 @@ in
    undo-fu-session
    dashboard
    org-mime
+   telega
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode

@@ -1,38 +1,111 @@
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-enabled-themes '(zerodark))
- '(custom-safe-themes
-   '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" "7eabdf26ddc6af7225638e343553435d862a82237481b7ce35a739a54a374607" default))
- '(font-use-system-font t)
- '(smtpmail-smtp-server "localhost")
- '(smtpmail-smtp-service 1025))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-
 (require 'package)
 
 ;; optional. makes unpure packages archives unavailable
-(setq package-archives nil)
+;;(setq package-archives nil)
+(setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
+                         ("melpa" . "http://melpa.org/packages/")))
 
 (setq package-enable-at-startup nil)
 (package-initialize)
 
-;; Enable evil mode
-(require 'evil)
-(evil-mode 1)
-(evilnc-default-hotkeys)
 
-;; TODO Sequence
-(setq org-todo-keywords
-  '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+;; Make buffer name more meaningful
+(add-hook 'exwm-update-class-hook
+	(lambda ()
+		(exwm-workspace-rename-buffer exwm-class-name)))
+(add-hook 'exwm-update-title-hook
+	(lambda ()
+		(when (or (not exwm-instance-name)
+			(string-prefix-p "sun-awt-X11-" exwm-instance-name)
+			(string= "gimp" exwm-instance-name))
+			(exwm-workspace-rename-buffer exwm-title))))
+
+
+
+(require 'doom-themes)
+(load-theme 'doom-palenight)
+
+
+(setq exwm-workspace-number 4)
+
+;; Global keybindings can be defined with `exwm-input-global-keys'.
+;; Here are a few examples:
+(setq exwm-input-global-keys
+      `(
+        ;; Bind "s-r" to exit char-mode and fullscreen mode.
+        ([?\s-r] . exwm-reset)
+        ;; Bind "s-w" to switch workspace interactively.
+        ([?\s-w] . exwm-workspace-switch)
+        ;; Bind "s-0" to "s-9" to switch to a workspace by its index.
+        ,@(mapcar (lambda (i)
+                    `(,(kbd (format "s-%d" i)) .
+                      (lambda ()
+                        (interactive)
+                        (exwm-workspace-switch-create ,i))))
+                  (number-sequence 0 9))
+        ;; Bind "s-&" to launch applications ('M-&' also works if the output
+        ;; buffer does not bother you).
+        ([?\s-&] . (lambda (command)
+		     (interactive (list (read-shell-command "$ ")))
+		     (start-process-shell-command command nil command)))))
+
+
+(defun efs/run-in-background (command)
+  (let ((command-parts (split-string command "[ ]+")))
+    (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
+(defun efs/set-wallpaper ()
+  (interactive)
+  ;; NOTE: You will need to update this to a valid background path!
+  (start-process-shell-command
+   "feh" nil  "feh --bg-scale /home/moses/Pictures/motivational-workout-conquer-m1f9vlaf12ukuaky.jpg"))
+
+(defun efs/exwm-init-hook ()
+  ;; Make workspace 1 be the one where we land at startup
+  ;;(exwm-workspace-switch-create 1)
+
+  ;; Open eshell by default
+  ;;(eshell)
+
+  ;; Show battery status in the mode line
+  (display-battery-mode 1)
+
+  ;; Show the time and date in modeline
+  (setq display-time-day-and-date t)
+  (display-time-mode 1)
+  ;; Also take a look at display-time-format and format-time-string
+
+  ;; Launch apps that will run in the background
+  (efs/run-in-background "dunst")
+  (efs/run-in-background "pasystray")
+  (efs/run-in-background "blueman-applet"))
+
+;; When EXWM starts up, do some extra confifuration
+(add-hook 'exwm-init-hook #'efs/exwm-init-hook)
+
+(exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+
+(defun efs/configure-window-by-class ()
+  (interactive)
+  (pcase exwm-class-name
+    ("qutebrowser" (exwm-workspace-move-window 0))
+    ("Brave-browser" (exwm-workspace-move-window 3))
+    ("mpv" (exwm-floating-toggle-floating)
+     (exwm-layout-toggle-mode-line))))
+
+
+(defun efs/disable-desktop-notifications ()
+  (interactive)
+  (start-process-shell-command "notify-send" nil "notify-send \"DUNST_COMMAND_PAUSE\""))
+
+(defun efs/enable-desktop-notifications ()
+  (interactive)
+  (start-process-shell-command "notify-send" nil "notify-send \"DUNST_COMMAND_RESUME\""))
+
+(defun efs/toggle-desktop-notifications ()
+  (interactive)
+  (start-process-shell-command "notify-send" nil "notify-send \"DUNST_COMMAND_TOGGLE\""))
+
 
 ;; Keyboard-centric user interface
 ;;(setq inhibit-startup-message t)
@@ -44,12 +117,39 @@
 ;; enable visual feedback on selections
 (setq transient-mark-mode t)
 
+(efs/set-wallpaper)
+
+;; TODO Sequence
+(setq org-todo-keywords
+      '((sequence "TODO" "IN-PROGRESS" "WAITING" "DONE")))
+
+;;Desktop Enviroment for key bindings
+(desktop-environment-mode)
+
 ;; Doom Mode Line
 (require 'doom-modeline)
 (doom-modeline-mode 1)
 
-;;Theme
-(load-theme 'doom-palenight)
+;; Enable evil mode
+;;(require 'evil)
+;;(evil-mode 1)
+;;(evilnc-default-hotkeys)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
+ '(package-selected-packages
+   '(lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
 
 ;;Which key mode
 (which-key-mode)
@@ -58,7 +158,7 @@
 (ivy-mode)
 (setq ivy-use-virtual-buffers t)
 (setq enable-recursive-minibuffers t)
-;; enable this if you want `swiper' to use it
+;;enable this if you want `swiper' to use it
 ;; (setq search-default-mode #'char-fold-to-regexp)
 (global-set-key "\C-s" 'swiper)
 (global-set-key (kbd "C-c C-r") 'ivy-resume)
@@ -78,10 +178,10 @@
 (global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
-
 ;;Org bullets
 (require 'org-bullets)
 (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1)))
+
 
 ;; Company
 (add-hook 'after-init-hook 'global-company-mode)
@@ -99,26 +199,19 @@
 (add-hook 'haskell-mode-hook #'lsp)
 (add-hook 'haskell-literate-mode-hook #'lsp)
 
-
-;;Haskell
-(require 'reformatter)
-(push "~/.elib/contrib/reformatter.el" load-path)
-(push "~/.elib/contrib/ormolu.el" load-path)
-(load-library "ormolu")
-(add-hook 'haskell-mode-hook 'ormolu-format-on-save-mode)
-
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 ;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
 (global-display-line-numbers-mode)
 (setq display-line-numbers-type 'relative)
 
-;;Undo across sessions
-(global-undo-fu-session-mode)
-
 ;;Startup Dashboard
 (require 'dashboard)
 (dashboard-setup-startup-hook)
+
+(require 'exwm-systemtray)
+;;(setq exwm-systemtray-height 32)
+(exwm-systemtray-enable)
 
 (add-to-list 'load-path "/nix/store/29drn9jg4riar14mw4ndpcw3iz0zrp2w-system-path/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
@@ -204,5 +297,4 @@
 :with-author nil
 :with-toc nil))
 
-
-(pdf-loader-install) ; On demand loading, leads to faster startup time
+(exwm-enable)
