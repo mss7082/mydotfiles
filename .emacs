@@ -20,13 +20,31 @@
 			(string= "gimp" exwm-instance-name))
 			(exwm-workspace-rename-buffer exwm-title))))
 
+(setq-default tab-width 2)
+(setq-default evil-shift-width tab-width)
+(setq-default indent-tabs-mode nil)
+
+
+(setq display-buffer-base-action
+      '(display-buffer-reuse-mode-window
+        display-buffer-reuse-window
+        display-buffer-same-window))
+
+;; If a popup does happen, don't resize windows to be equal-sized
+(setq even-window-sizes nil)
+
+;; Window size management
+(global-set-key (kbd "S-C-<left>") 'shrink-window-horizontally)
+(global-set-key (kbd "S-C-<right>") 'enlarge-window-horizontally)
+(global-set-key (kbd "S-C-<down>") 'shrink-window)
+(global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
 
 (require 'doom-themes)
-(load-theme 'doom-palenight)
+(load-theme 'doom-palenight t)
 
 
-(setq exwm-workspace-number 4)
+(setq exwm-workspace-number 0)
 
 ;; Global keybindings can be defined with `exwm-input-global-keys'.
 ;; Here are a few examples:
@@ -61,8 +79,8 @@
    "feh" nil  "feh --bg-scale /home/moses/Pictures/motivational-workout-conquer-m1f9vlaf12ukuaky.jpg"))
 
 (defun efs/exwm-init-hook ()
-  ;; Make workspace 1 be the one where we land at startup
-  ;;(exwm-workspace-switch-create 1)
+  ;; Make workspace 0 be the one where we land at startup
+  (exwm-workspace-switch-create 0)
 
   ;; Open eshell by default
   ;;(eshell)
@@ -85,14 +103,80 @@
 
 (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
 
-(defun efs/configure-window-by-class ()
-  (interactive)
-  (pcase exwm-class-name
-    ("qutebrowser" (exwm-workspace-move-window 0))
-    ("Brave-browser" (exwm-workspace-move-window 3))
-    ("mpv" (exwm-floating-toggle-floating)
-     (exwm-layout-toggle-mode-line))))
+;;(defun efs/configure-window-by-class ()
+;;  (interactive)
+;;  (pcase exwm-class-name
+;;    ("qutebrowser" (exwm-workspace-move-window 0))
+;;    ("discord" (exwm-workspace-move-window 1))
+;;    ("TelegramDesktop" (exwm-workspace-move-window 1))
+;;    ("vlc" (exwm-workspace-move-window 2))
+;;    ("Brave-browser" (exwm-workspace-move-window 4))
+;;    ("mpv" (exwm-floating-toggle-floating)
+;;     (exwm-layout-toggle-mode-line))))
 
+
+;; Tab-bar settings.
+
+(defun dipo/tab-bar-switch-or-create (name func)
+  (if (dipo/tab-bar-tab-exists name)
+      (tab-bar-switch-to-tab name)
+    (dipo/tab-bar-new-tab name func)))
+
+(defun dipo/tab-bar-tab-exists (name)
+  (member name
+	  (mapcar #'(lambda (tab) (alist-get 'name tab))
+		        (tab-bar-tabs))))
+
+(defun dipo/tab-bar-new-tab (name func)
+  (when (eq nil tab-bar-mode)
+    (tab-bar-mode))
+  (tab-bar-new-tab)
+  (tab-bar-rename-tab name)
+  (funcall func))
+
+;;(defun dipo/tab-bar-run-elfeed ()
+;;  (interactive)
+;;  (dipo/tab-bar-switch-or-create "RSS" #'elfeed))
+
+(defun dipo/tab-bar-run-mail ()
+  (interactive)
+  (dipo/tab-bar-switch-or-create
+   "Mail"
+   #'(lambda ()
+       ;;(mu4e-context-switch :name "Private") ;; If not set then mu4e will ask for it.
+       (mu4e))))
+
+;;(defun dipo/tab-bar-run-irc ()
+;;  (interactive)
+;;  (dipo/tab-bar-switch-or-create
+;;   "IRC"
+;;   #'(lambda ()
+;;       (dipo/erc-connect)
+;;      (sit-for 1) ;; ERC connect takes a while to load and doesn't switch to a buffer itself.
+;;       (switch-to-buffer "Libera.Chat"))))
+
+(defun dipo/tab-bar-run-agenda ()
+  (interactive)
+  (dipo/tab-bar-switch-or-create
+   "Agenda"
+   #'(lambda ()
+       (org-agenda nil "a")))) ;; 'a' is the key of the agenda configuration I currently use.
+
+;;(defun dipo/tab-bar-run-journal ()
+;;  (interactive)
+;;  (dipo/tab-bar-switch-or-create
+;;   "Journal"
+;;   #'org-journal-open-current-journal-file))
+
+;;(defun dipo/tab-bar-run-projects ()
+;;  (interactive)
+;;  (dipo/tab-bar-switch-or-create
+;;   "Projects"
+;;   #'(lambda ()
+;;       (find-file "~/org/projects.org"))))
+
+
+;; Desktop notifications
 
 (defun efs/disable-desktop-notifications ()
   (interactive)
@@ -125,15 +209,33 @@
 
 ;;Desktop Enviroment for key bindings
 (desktop-environment-mode)
+(setq desktop-environment-brightness-small-increment "2%+")
+(setq desktop-environment-brightness-small-decrement "2%-")
+(setq desktop-environment-brightness-normal-increment "5%+")
+(setq desktop-environment-brightness-normal-decrement "5%-")
+
+;; Highlight Matching Braces
+(require 'paren)
+(set-face-attribute 'show-paren-match-expression nil :background "#363e4a")
+(show-paren-mode 1)
+
+;; ESC Cancels All
+(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+
+;;Auto save changed files
+(super-save-mode +1)
+(setq super-save-auto-save-when-idle t)
+
 
 ;; Doom Mode Line
 (require 'doom-modeline)
 (doom-modeline-mode 1)
 
 ;; Enable evil mode
-;;(require 'evil)
-;;(evil-mode 1)
+(require 'evil)
+(evil-mode 1)
 ;;(evilnc-default-hotkeys)
+(setq evil-undo-system 'undo-fu)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -143,15 +245,13 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
+   '(use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-;;Which key mode
 (which-key-mode)
 
 ;; Ivy Counsel and Swiper
@@ -250,8 +350,8 @@
 
 ;; general emacs mail settings; used when composing e-mail
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-compose-reply-to-address "moses@example.com"
-      user-mail-address "moses@example.com"
+(setq mu4e-compose-reply-to-address "moses@sokabi.me"
+      user-mail-address "moses@sokabi.me"
       user-full-name  "Moses S.")
 (setq mu4e-compose-signature
    "Regards,\nMoses\n")

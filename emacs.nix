@@ -50,6 +50,9 @@ in
    dashboard
    org-mime
    telega
+   super-save
+   perspective
+   hydra
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
