@@ -3,7 +3,8 @@
 ;; optional. makes unpure packages archives unavailable
 ;;(setq package-archives nil)
 (setq package-archives '(("gnu" . "http://elpa.gnu.org/packages/")
-                         ("melpa" . "http://melpa.org/packages/")))
+                         ("melpa" . "http://melpa.org/packages/")
+                         ("melpa-stable" . "https://stable.melpa.org/packages/")))
 
 (setq package-enable-at-startup nil)
 (package-initialize)
@@ -102,6 +103,8 @@
 (add-hook 'exwm-init-hook #'efs/exwm-init-hook)
 
 (exwm-input-set-key (kbd "s-SPC") 'counsel-linux-app)
+(define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
+
 
 ;;(defun efs/configure-window-by-class ()
 ;;  (interactive)
@@ -245,7 +248,7 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
+   '(elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -396,5 +399,45 @@
 :section-numbers nil
 :with-author nil
 :with-toc nil))
+
+;; RSS FEEDS
+(global-set-key (kbd "C-x w") 'elfeed)
+(setq telega-server-libs-prefix "/nix/store/jhlvq7axrhzlyrp33jflzc19rqbx7cis-tdlib-1.7.9/lib")
+(setq elfeed-feeds
+      '(
+        ;; programming
+        ("https://www.reddit.com/r/emacs.rss" emacs)
+
+        ("https://www.reddit.com/r/cardanodevelopers.rss" cardanodev)
+
+        ;; networking
+        ("https://www.reddit.com/r/networking.rss" networking)
+
+        ;; os
+        ("https://www.reddit.com/r/nixos.rss" nixos)
+
+        ;;crypto
+        ("https://www.reddit.com/r/cardano.rss" cardano)
+        
+
+        ;; programming languages
+        ("https://www.reddit.com/r/haskell.rss" haskell)
+        ("https://www.reddit.com/r/rust.rss" rust)
+
+        ;; cloud
+        ("https://www.reddit.com/r/aws.rss" aws)
+        ("https://www.reddit.com/r/googlecloud.rss" googlecloud)
+        ("https://www.reddit.com/r/azure.rss" azure)
+        ("https://www.reddit.com/r/devops.rss" devops)
+        ("https://www.reddit.com/r/kubernetes.rss" kubernetes)
+))
+
+(setq-default elfeed-search-filter "@2-days-ago +unread")
+(setq-default elfeed-search-title-max-width 100)
+(setq-default elfeed-search-title-min-width 100)
+
+;;Fix evil conflicts with elfeed
+(add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
+(add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
 
 (exwm-enable)

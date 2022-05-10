@@ -53,6 +53,7 @@ in
    super-save
    perspective
    hydra
+   elfeed
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode

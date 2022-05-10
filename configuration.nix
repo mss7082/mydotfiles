@@ -133,6 +133,8 @@
     tlp
     playerctl
     logseq
+    tdlib
+    filezilla
   ];
 
   nixpkgs.config.allowUnfree = true;
