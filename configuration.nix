@@ -52,6 +52,9 @@
   services.emacs.enable = true;
   services.emacs.package = import ./emacs.nix { pkgs = pkgs; }; 
 
+  # Enable Docker
+  virtualisation.docker.enable = true;
+
 
   # Enable the GNOME Desktop Environment.
   #services.xserver.displayManager.gdm.enable = true;
@@ -88,7 +91,7 @@
   users.users.moses = {
     isNormalUser = true;
     shell = pkgs.fish;
-    extraGroups = [ "wheel" "plugdev" "networkmanager" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "plugdev" "networkmanager" "docker"]; # Enable ‘sudo’ for the user.
   };
 
   # List packages installed in system profile. To search, run:
@@ -133,8 +136,11 @@
     tlp
     playerctl
     logseq
-    tdlib
+    #tdlib #using the unstable version in user env
     filezilla
+    gnumake
+    pkg-config
+    gcc
   ];
 
   nixpkgs.config.allowUnfree = true;

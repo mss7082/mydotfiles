@@ -353,8 +353,8 @@
 
 ;; general emacs mail settings; used when composing e-mail
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-compose-reply-to-address "moses@example.com"
-      user-mail-address "moses@example.com"
+(setq mu4e-compose-reply-to-address "moses@sokabi.me"
+      user-mail-address "moses@sokabi.me"
       user-full-name  "Moses S.")
 (setq mu4e-compose-signature
    "Regards,\nMoses\n")
@@ -402,7 +402,6 @@
 
 ;; RSS FEEDS
 (global-set-key (kbd "C-x w") 'elfeed)
-(setq telega-server-libs-prefix "/nix/store/jhlvq7axrhzlyrp33jflzc19rqbx7cis-tdlib-1.7.9/lib")
 (setq elfeed-feeds
       '(
         ;; programming
@@ -435,6 +434,13 @@
 (setq-default elfeed-search-filter "@2-days-ago +unread")
 (setq-default elfeed-search-title-max-width 100)
 (setq-default elfeed-search-title-min-width 100)
+
+;;Telegram
+(setq telega-use-docker t)
+
+;;(setq telega-server-libs-prefix "/nix/store/jhlvq7axrhzlyrp33jflzc19rqbx7cis-tdlib-1.7.9/")
+;;(setq telega-server-libs-prefix "/nix/store/9m67dfjbs0rd9ay4lqdvjwan971hz8af-tdlib-1.8.3/")
+
 
 ;;Fix evil conflicts with elfeed
 (add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
