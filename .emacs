@@ -318,8 +318,8 @@
 
 ;; general emacs mail settings; used when composing e-mail
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-compose-reply-to-address "moses@sokabi.me"
-      user-mail-address "moses@sokabi.me"
+(setq mu4e-compose-reply-to-address "moses@example.me"
+      user-mail-address "moses@example.me"
       user-full-name  "Moses S.")
 (setq mu4e-compose-signature
    "Regards,\nMoses\n")
