@@ -54,6 +54,14 @@ in
    perspective
    hydra
    elfeed
+   mpv
+   org-roam
+   dired-rainbow
+   dired-ranger
+   dired-collapse
+   dired-single
+   all-the-icons-dired
+   
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode

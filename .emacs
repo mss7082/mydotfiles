@@ -1,4 +1,5 @@
 (require 'package)
+;;(require 'use-package)
 
 ;; optional. makes unpure packages archives unavailable
 ;;(setq package-archives nil)
@@ -9,6 +10,9 @@
 (setq package-enable-at-startup nil)
 (package-initialize)
 
+;; (setq lpr-command "lpr")
+(require 'printing)
+(pr-update-menus)
 
 ;; Make buffer name more meaningful
 (add-hook 'exwm-update-class-hook
@@ -24,6 +28,9 @@
 (setq-default tab-width 2)
 (setq-default evil-shift-width tab-width)
 (setq-default indent-tabs-mode nil)
+
+;; Set up the visible bell
+(setq visible-bell t)
 
 
 (setq display-buffer-base-action
@@ -41,9 +48,13 @@
 (global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
 
-(require 'doom-themes)
+;;(require 'doom-themes)
+(use-package doom-themes :defer t)
 (load-theme 'doom-palenight t)
+(doom-themes-visual-bell-config)
 
+
+(save-place-mode 1) 
 
 (setq exwm-workspace-number 0)
 
@@ -106,79 +117,6 @@
 (define-key exwm-mode-map [?\C-q] 'exwm-input-send-next-key)
 
 
-;;(defun efs/configure-window-by-class ()
-;;  (interactive)
-;;  (pcase exwm-class-name
-;;    ("qutebrowser" (exwm-workspace-move-window 0))
-;;    ("discord" (exwm-workspace-move-window 1))
-;;    ("TelegramDesktop" (exwm-workspace-move-window 1))
-;;    ("vlc" (exwm-workspace-move-window 2))
-;;    ("Brave-browser" (exwm-workspace-move-window 4))
-;;    ("mpv" (exwm-floating-toggle-floating)
-;;     (exwm-layout-toggle-mode-line))))
-
-
-;; Tab-bar settings.
-
-(defun dipo/tab-bar-switch-or-create (name func)
-  (if (dipo/tab-bar-tab-exists name)
-      (tab-bar-switch-to-tab name)
-    (dipo/tab-bar-new-tab name func)))
-
-(defun dipo/tab-bar-tab-exists (name)
-  (member name
-	  (mapcar #'(lambda (tab) (alist-get 'name tab))
-		        (tab-bar-tabs))))
-
-(defun dipo/tab-bar-new-tab (name func)
-  (when (eq nil tab-bar-mode)
-    (tab-bar-mode))
-  (tab-bar-new-tab)
-  (tab-bar-rename-tab name)
-  (funcall func))
-
-;;(defun dipo/tab-bar-run-elfeed ()
-;;  (interactive)
-;;  (dipo/tab-bar-switch-or-create "RSS" #'elfeed))
-
-(defun dipo/tab-bar-run-mail ()
-  (interactive)
-  (dipo/tab-bar-switch-or-create
-   "Mail"
-   #'(lambda ()
-       ;;(mu4e-context-switch :name "Private") ;; If not set then mu4e will ask for it.
-       (mu4e))))
-
-;;(defun dipo/tab-bar-run-irc ()
-;;  (interactive)
-;;  (dipo/tab-bar-switch-or-create
-;;   "IRC"
-;;   #'(lambda ()
-;;       (dipo/erc-connect)
-;;      (sit-for 1) ;; ERC connect takes a while to load and doesn't switch to a buffer itself.
-;;       (switch-to-buffer "Libera.Chat"))))
-
-(defun dipo/tab-bar-run-agenda ()
-  (interactive)
-  (dipo/tab-bar-switch-or-create
-   "Agenda"
-   #'(lambda ()
-       (org-agenda nil "a")))) ;; 'a' is the key of the agenda configuration I currently use.
-
-;;(defun dipo/tab-bar-run-journal ()
-;;  (interactive)
-;;  (dipo/tab-bar-switch-or-create
-;;   "Journal"
-;;   #'org-journal-open-current-journal-file))
-
-;;(defun dipo/tab-bar-run-projects ()
-;;  (interactive)
-;;  (dipo/tab-bar-switch-or-create
-;;   "Projects"
-;;   #'(lambda ()
-;;       (find-file "~/org/projects.org"))))
-
-
 ;; Desktop notifications
 
 (defun efs/disable-desktop-notifications ()
@@ -223,22 +161,30 @@
 (show-paren-mode 1)
 
 ;; ESC Cancels All
-(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
+;;(global-set-key (kbd "<escape>") 'keyboard-escape-quit)
 
 ;;Auto save changed files
-(super-save-mode +1)
-(setq super-save-auto-save-when-idle t)
+;;(super-save-mode +1)
+;;(setq super-save-auto-save-when-idle t)
+;;(setq auto-save-default nil)
+(use-package super-save
+  :defer 1
+  :config
+  (super-save-mode +1)
+  (setq super-save-auto-save-when-idle t))
+
 
 
 ;; Doom Mode Line
-(require 'doom-modeline)
-(doom-modeline-mode 1)
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
 
 ;; Enable evil mode
-(require 'evil)
-(evil-mode 1)
+;;(require 'evil)
+;;(evil-mode 1)
 ;;(evilnc-default-hotkeys)
-(setq evil-undo-system 'undo-fu)
+;;(setq evil-undo-system 'undo-fu)
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -248,14 +194,18 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
+   '(org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-(which-key-mode)
+;;(which-key-mode)
+(use-package which-key
+  :init (which-key-mode)
+  :config
+  (setq which-key-idle-delay 0.3))
 
 ;; Ivy Counsel and Swiper
 (ivy-mode)
@@ -278,7 +228,7 @@
 (global-set-key (kbd "C-c j") 'counsel-git-grep)
 (global-set-key (kbd "C-c k") 'counsel-ag)
 (global-set-key (kbd "C-x l") 'counsel-locate)
-(global-set-key (kbd "C-S-o") 'counsel-rhythmbox)
+(global-set-key (kbd "C-S-o") 'counsel-rhythnmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
 
 ;;Org bullets
@@ -294,7 +244,9 @@
 (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
 
 ;;Rainbow Delimiters
-(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+;;(add-hook 'prog-mode-hook #'rainbow-delimiters-mode)
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
 
 ;;LSP Config
 (require 'lsp-mode)
@@ -305,8 +257,21 @@
 ;; This determines the style of line numbers in effect. If set to `nil', line
 ;; numbers are disabled. For relative line numbers, set this to `relative'.
 ;;(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(global-display-line-numbers-mode)
-(setq display-line-numbers-type 'relative)
+;;(global-display-line-numbers-mode)
+;;(setq display-line-numbers-type 'relative)
+(column-number-mode)
+
+;; Enable line numbers for some modes
+(dolist (mode '(text-mode-hook
+                prog-mode-hook
+                conf-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 1))))
+
+;; Override some modes which derive from the above
+(dolist (mode '(org-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 0))))
+
+
 
 ;;Startup Dashboard
 (require 'dashboard)
@@ -437,13 +402,67 @@
 
 ;;Telegram
 (setq telega-use-docker t)
+;;(setq telega-video-player-command t 'mpv)
+(add-hook 'telega-load-hook 'telega-notifications-mode)
 
-;;(setq telega-server-libs-prefix "/nix/store/jhlvq7axrhzlyrp33jflzc19rqbx7cis-tdlib-1.7.9/")
-;;(setq telega-server-libs-prefix "/nix/store/9m67dfjbs0rd9ay4lqdvjwan971hz8af-tdlib-1.8.3/")
 
+(use-package org-roam
+  :ensure t
+  :init
+  (setq org-roam-v2-ack t)
+  :custom
+  (org-roam-directory "~/orgRoam")
+  (org-roam-completion-everywhere t)
+  (org-roam-dailies-capture-templates
+    '(("d" "default" entry "* %<%I:%M %p>: %?"
+       :if-new (file+head "%<%Y-%m-%d>.org" "#+title: %<%Y-%m-%d>\n"))))
+  :bind (("C-c n l" . org-roam-buffer-toggle)
+         ("C-c n f" . org-roam-node-find)
+         ("C-c n i" . org-roam-node-insert)
+         :map org-mode-map
+         ("C-M-i" . completion-at-point)
+         :map org-roam-dailies-map
+         ("Y" . org-roam-dailies-capture-yesterday)
+         ("T" . org-roam-dailies-capture-tomorrow))
+  :bind-keymap
+  ("C-c n d" . org-roam-dailies-map)
+  :config
+  (require 'org-roam-dailies) ;; Ensure the keymap is available
+  (org-roam-db-autosync-mode))
 
-;;Fix evil conflicts with elfeed
-(add-to-list 'evil-emacs-state-modes 'elfeed-search-mode)
-(add-to-list 'evil-emacs-state-modes 'elfeed-show-mode)
+(use-package all-the-icons-dired)
+
+(use-package dired-rainbow
+    :defer 2
+    :config
+    (dired-rainbow-define-chmod directory "#6cb2eb" "d.*")
+    (dired-rainbow-define html "#eb5286" ("css" "less" "sass" "scss" "htm" "html" "jhtm" "mht" "eml" "mustache" "xhtml"))
+    (dired-rainbow-define xml "#f2d024" ("xml" "xsd" "xsl" "xslt" "wsdl" "bib" "json" "msg" "pgn" "rss" "yaml" "yml" "rdata"))
+    (dired-rainbow-define document "#9561e2" ("docm" "doc" "docx" "odb" "odt" "pdb" "pdf" "ps" "rtf" "djvu" "epub" "odp" "ppt" "pptx"))
+    (dired-rainbow-define markdown "#ffed4a" ("org" "etx" "info" "markdown" "md" "mkd" "nfo" "pod" "rst" "tex" "textfile" "txt"))
+    (dired-rainbow-define database "#6574cd" ("xlsx" "xls" "csv" "accdb" "db" "mdb" "sqlite" "nc"))
+    (dired-rainbow-define media "#de751f" ("mp3" "mp4" "mkv" "MP3" "MP4" "avi" "mpeg" "mpg" "flv" "ogg" "mov" "mid" "midi" "wav" "aiff" "flac"))
+    (dired-rainbow-define image "#f66d9b" ("tiff" "tif" "cdr" "gif" "ico" "jpeg" "jpg" "png" "psd" "eps" "svg"))
+    (dired-rainbow-define log "#c17d11" ("log"))
+    (dired-rainbow-define shell "#f6993f" ("awk" "bash" "bat" "sed" "sh" "zsh" "vim"))
+    (dired-rainbow-define interpreted "#38c172" ("py" "ipynb" "rb" "pl" "t" "msql" "mysql" "pgsql" "sql" "r" "clj" "cljs" "scala" "js"))
+    (dired-rainbow-define compiled "#4dc0b5" ("asm" "cl" "lisp" "el" "c" "h" "c++" "h++" "hpp" "hxx" "m" "cc" "cs" "cp" "cpp" "go" "f" "for" "ftn" "f90" "f95" "f03" "f08" "s" "rs" "hi" "hs" "pyc" ".java"))
+    (dired-rainbow-define executable "#8cc4ff" ("exe" "msi"))
+    (dired-rainbow-define compressed "#51d88a" ("7z" "zip" "bz2" "tgz" "txz" "gz" "xz" "z" "Z" "jar" "war" "ear" "rar" "sar" "xpi" "apk" "xz" "tar"))
+    (dired-rainbow-define packaged "#faad63" ("deb" "rpm" "apk" "jad" "jar" "cab" "pak" "pk3" "vdf" "vpk" "bsp"))
+    (dired-rainbow-define encrypted "#ffed4a" ("gpg" "pgp" "asc" "bfe" "enc" "signature" "sig" "p12" "pem"))
+    (dired-rainbow-define fonts "#6cb2eb" ("afm" "fon" "fnt" "pfb" "pfm" "ttf" "otf"))
+    (dired-rainbow-define partition "#e3342f" ("dmg" "iso" "bin" "nrg" "qcow" "toast" "vcd" "vmdk" "bak"))
+    (dired-rainbow-define vc "#0074d9" ("git" "gitignore" "gitattributes" "gitmodules"))
+    (dired-rainbow-define-chmod executable-unix "#38c172" "-.*x.*"))
+
+(use-package dired-single
+    :defer t)
+
+(use-package dired-ranger
+    :defer t)
+
+(use-package dired-collapse
+    :defer t)
 
 (exwm-enable)

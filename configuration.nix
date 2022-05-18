@@ -136,11 +136,14 @@
     tlp
     playerctl
     logseq
-    #tdlib #using the unstable version in user env
+    tdlib #using the unstable version in user env
     filezilla
     gnumake
     pkg-config
     gcc
+    ffmpeg
+    mpv
+    nyxt
   ];
 
   nixpkgs.config.allowUnfree = true;
