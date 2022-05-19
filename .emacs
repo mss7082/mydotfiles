@@ -194,7 +194,9 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline)))
+   '(org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
+ '(pdf-misc-print-program-executable "/run/current-system/sw/bin/lpr")
+ '(pdf-misc-print-programm-args (quote ("-o media=A4" "-o fit-to-page"))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -318,8 +320,8 @@
 
 ;; general emacs mail settings; used when composing e-mail
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
-(setq mu4e-compose-reply-to-address "moses@example.me"
-      user-mail-address "moses@example.me"
+(setq mu4e-compose-reply-to-address "moses@sokabi.me"
+      user-mail-address "moses@sokabi.me"
       user-full-name  "Moses S.")
 (setq mu4e-compose-signature
    "Regards,\nMoses\n")
@@ -392,8 +394,17 @@
         ("https://www.reddit.com/r/aws.rss" aws)
         ("https://www.reddit.com/r/googlecloud.rss" googlecloud)
         ("https://www.reddit.com/r/azure.rss" azure)
-        ("https://www.reddit.com/r/devops.rss" devops)
-        ("https://www.reddit.com/r/kubernetes.rss" kubernetes)
+
+        ;;RnineT
+        ("https://www.ninetowners.com/forums/servicing-and-maintainance.661/index.rss" rninetservice)
+        ("https://www.ninetowners.com/forums/r-ninet-builds.641/index.rss" rninetbuilds)
+        ("https://www.ninetowners.com/forums/bmw-ninet-photos.121/index.rss" rninetphotos)
+        ("https://www.ninetowners.com/forums/bmw-ninet-videos.129/index.rss" rninetvideos)
+        ("https://www.ninetowners.com/forums/wheels-tires-and-brakes.185/index.rss" rninetwheels)
+        ("https://www.ninetowners.com/forums/how-to-tutorials-and-diy-projects.659/index.rss" rninetdiy)
+        ("https://www.ninetowners.com/forums/accessories-and-gear.209/index.rss" rninetgear)
+        ("https://www.ninetowners.com/forums/electronics.201/index.rss" rninetelectronics)
+        ("https://www.ninetowners.com/forums/appearance-body.193/index.rss" rninetbody)
 ))
 
 (setq-default elfeed-search-filter "@2-days-ago +unread")
@@ -463,6 +474,7 @@
     :defer t)
 
 (use-package dired-collapse
-    :defer t)
+  :defer t)
+
 
 (exwm-enable)
