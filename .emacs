@@ -47,6 +47,11 @@
 (global-set-key (kbd "S-C-<down>") 'shrink-window)
 (global-set-key (kbd "S-C-<up>") 'enlarge-window)
 
+(setq mouse-wheel-scroll-amount '(1 ((shift) . 1))) ;; one line at a time
+(setq mouse-wheel-progressive-speed nil) ;; don't accelerate scrolling
+(setq mouse-wheel-follow-mouse 't) ;; scroll window under mouse
+(setq scroll-step 1) ;; keyboard scroll one line at a time
+
 
 ;;(require 'doom-themes)
 (use-package doom-themes :defer t)
@@ -194,9 +199,9 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
+   '(ivy-prescient company-prescient org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
  '(pdf-misc-print-program-executable "/run/current-system/sw/bin/lpr")
- '(pdf-misc-print-programm-args (quote ("-o media=A4" "-o fit-to-page"))))
+ '(pdf-misc-print-programm-args '("-o media=A4" "-o fit-to-page")))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -232,6 +237,20 @@
 (global-set-key (kbd "C-x l") 'counsel-locate)
 (global-set-key (kbd "C-S-o") 'counsel-rhythnmbox)
 (define-key minibuffer-local-map (kbd "C-r") 'counsel-minibuffer-history)
+
+(use-package ivy-prescient
+  :after counsel
+  :config
+  (ivy-prescient-mode 1))
+(setq prescient-filter-method '(literal regexp fuzzy))
+
+(use-package company-prescient
+  :after company
+  :config
+  (company-prescient-mode 1))
+
+;; Remember candidate frequencies across sessions
+;;(prescient-persist-mode 1)
 
 ;;Org bullets
 (require 'org-bullets)
@@ -475,6 +494,71 @@
 
 (use-package dired-collapse
   :defer t)
+
+(use-package xterm-color)
+(use-package eshell)
+;; Save command history when commands are entered
+(add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+
+(add-hook 'eshell-before-prompt-hook
+          (lambda ()
+            (setq xterm-color-preserve-properties t)))
+
+;; We want to use xterm-256color when running interactive commands
+;; in eshell but not during other times when we might be launching
+;; a shell command to gather its output.
+(add-hook 'eshell-pre-command-hook
+          (lambda () (setenv "TERM" "xterm-256color")))
+(add-hook 'eshell-post-command-hook
+          (lambda () (setenv "TERM" "dumb")))
+
+
+
+(setq eshell-prompt-regexp        "^λ "
+      eshell-history-size         10000
+      eshell-buffer-maximum-lines 10000
+      eshell-hist-ignoredups t
+      eshell-highlight-prompt t
+      eshell-scroll-to-bottom-on-input t
+      eshell-prefer-lisp-functions nil)
+
+(use-package fish-completion
+  :hook (eshell-mode . fish-completion-mode))
+
+(use-package esh-autosuggest
+  :hook (eshell-mode . esh-autosuggest-mode)
+  :config
+  (setq esh-autosuggest-delay 0.5)
+  (set-face-foreground 'company-preview-common "#4b5668")
+  (set-face-background 'company-preview nil))
+
+(use-package eshell-toggle
+  :bind ("C-M-'" . eshell-toggle)
+  :custom
+  (eshell-toggle-size-fraction 3)
+  (eshell-toggle-use-projectile-root t)
+  (eshell-toggle-run-command nil))
+
+(use-package vterm
+  :commands vterm
+  :config
+  (setq vterm-max-scrollback 10000))
+
+
+;; Don't let ediff break EXWM, keep it in one frame
+(setq ediff-diff-options "-w"
+      ediff-split-window-function 'split-window-horizontally
+ediff-window-setup-function 'ediff-setup-windows-plain)
+
+(use-package docker
+  :commands docker)
+
+(use-package docker-tramp
+  :defer t
+:after docker)
+
+;; Make gc pauses faster by decreasing the threshold.
+(setq gc-cons-threshold (* 2 1000 1000))
 
 
 (exwm-enable)

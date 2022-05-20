@@ -61,7 +61,15 @@ in
    dired-collapse
    dired-single
    all-the-icons-dired
-   
+   company-prescient
+   ivy-prescient
+   docker
+   docker-tramp
+   vterm
+   eshell-toggle
+   esh-autosuggest
+   fish-completion
+   xterm-color
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
