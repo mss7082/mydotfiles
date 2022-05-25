@@ -1,5 +1,6 @@
+;; -*- lexical-binding: t; -*-
+
 (require 'package)
-;;(require 'use-package)
 
 ;; optional. makes unpure packages archives unavailable
 ;;(setq package-archives nil)
@@ -7,8 +8,18 @@
                          ("melpa" . "http://melpa.org/packages/")
                          ("melpa-stable" . "https://stable.melpa.org/packages/")))
 
-(setq package-enable-at-startup nil)
-(package-initialize)
+;;(setq package-enable-at-startup nil)
+;;(package-initialize)
+
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+        use-package-expand-minimally t))
+
+(pdf-tools-install)
+
 
 ;; (setq lpr-command "lpr")
 (require 'printing)
@@ -60,6 +71,36 @@
 
 
 (save-place-mode 1) 
+
+(defun efs/set-wallpaper ()
+  (interactive)
+  ;; NOTE: You will need to update this to a valid background path!
+  (start-process-shell-command
+   "feh" nil  "feh --bg-scale /home/moses/Pictures/motivational-workout-conquer-m1f9vlaf12ukuaky.jpg"))
+
+
+;;Multiple monitors setup
+(require 'exwm-randr)
+(exwm-randr-enable)
+
+;;(start-process-shell-command "xrandr" nil "xrandr --output eDP-1 --primary --mode 1920x1080 --pos 0x0 --rotate normal --output DP-1 --off --output HDMI-1 --off --output DP-2 --off --output HDMI-2 --mode 3840x1080 --pos 1920x0 --rotate normal")
+
+(setq exwm-randr-workspace-monitor-plist '(2 "HDMI-2" 3 "HDMI-2"))
+
+(defun efs/update-displays ()
+  (efs/run-in-background "autorandr --change --force")
+  (efs/set-wallpaper)
+  (message "Display config: %s"
+           (string-trim (shell-command-to-string "autorandr --current"))))
+
+;; React to display connectivity changes, do initial display update
+(add-hook 'exwm-randr-screen-change-hook #'efs/update-displays)
+(efs/update-displays)
+
+
+(setq exwm-workspace-warp-cursor t)
+(setq mouse-autoselect-window t
+      focus-follows-mouse t)
 
 (setq exwm-workspace-number 0)
 
@@ -199,9 +240,9 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(ivy-prescient company-prescient org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
- '(pdf-misc-print-program-executable "/run/current-system/sw/bin/lpr")
- '(pdf-misc-print-programm-args '("-o media=A4" "-o fit-to-page")))
+   '(eshell dired-collapse dired-ranger dired-single dired-rainbow ivy-prescient company-prescient org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
+ '(pdf-misc-print-program-args '("-o media=A4" "-o fit-to-page"))
+ '(pdf-misc-print-program-executable "/run/current-system/sw/bin/lpr"))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -460,6 +501,27 @@
   (require 'org-roam-dailies) ;; Ensure the keymap is available
   (org-roam-db-autosync-mode))
 
+
+;;(defun my/org-roam-filter-by-tag (tag-name)
+;;  (lambda (node)
+;;    (member tag-name (org-roam-node-tags node))))
+
+;;(defun my/org-roam-list-notes-by-tag (tag-name)
+;;  (mapcar #'org-roam-node-file
+;;          (seq-filter
+;;           (my/org-roam-filter-by-tag tag-name)
+;;           (org-roam-node-list))))
+
+;;(defun my/org-roam-refresh-agenda-list ()
+;;  (interactive)
+;;  (setq org-agenda-files (my/org-roam-list-notes-by-tag "Project")))
+
+;; Build the agenda list the first time for the session
+;;(my/org-roam-refresh-agenda-list)
+
+(define-key global-map (kbd "C-c a") #'org-agenda)
+
+
 (use-package all-the-icons-dired)
 
 (use-package dired-rainbow
@@ -495,54 +557,54 @@
 (use-package dired-collapse
   :defer t)
 
-(use-package xterm-color)
-(use-package eshell)
-;; Save command history when commands are entered
-(add-hook 'eshell-pre-command-hook 'eshell-save-some-history)
+;;(use-package xterm-color)
+;;(use-package eshell)
 
-(add-hook 'eshell-before-prompt-hook
-          (lambda ()
-            (setq xterm-color-preserve-properties t)))
+;;(add-hook 'eshell-before-prompt-hook
+;;          (lambda ()
+;;            (setq xterm-color-preserve-properties t)))
 
 ;; We want to use xterm-256color when running interactive commands
 ;; in eshell but not during other times when we might be launching
 ;; a shell command to gather its output.
-(add-hook 'eshell-pre-command-hook
-          (lambda () (setenv "TERM" "xterm-256color")))
-(add-hook 'eshell-post-command-hook
-          (lambda () (setenv "TERM" "dumb")))
+;;(add-hook 'eshell-pre-command-hook
+;;          (lambda () (setenv "TERM" "xterm-256color")))
+;;(add-hook 'eshell-post-command-hook
+;;          (lambda () (setenv "TERM" "dumb")))
 
 
+;;(defun shortened-path (path max-len)
+;;      "Return a modified version of `path', replacing some components
+;;      with single characters starting from the left to try and get
+;;      the path down to `max-len'"
+;;      (let* ((components (split-string (abbreviate-file-name path) "/"))
+;;             (len (+ (1- (length components))
+;;                     (reduce '+ components :key 'length)))
+;;             (str ""))
+;;        (while (and (> len max-len)
+;;                    (cdr components))
+;;          (setq str (concat str (if (= 0 (length (car components)))
+;;                                    "/"
+;;                                  (string (elt (car components) 0) ?/)))
+;;                len (- len (1- (length (car components))))
+;;                components (cdr components)))
+;;        (concat str (reduce (lambda (a b) (concat a "/" b)) components))))
 
-(setq eshell-prompt-regexp        "^λ "
-      eshell-history-size         10000
-      eshell-buffer-maximum-lines 10000
-      eshell-hist-ignoredups t
-      eshell-highlight-prompt t
-      eshell-scroll-to-bottom-on-input t
-      eshell-prefer-lisp-functions nil)
 
-(use-package fish-completion
-  :hook (eshell-mode . fish-completion-mode))
+;;(defun rjs-eshell-prompt-function ()
+;;      (concat (shortened-path (eshell/pwd) 40)
+;;              (if (= (user-uid) 0) " # " " $ ")))
 
-(use-package esh-autosuggest
-  :hook (eshell-mode . esh-autosuggest-mode)
-  :config
-  (setq esh-autosuggest-delay 0.5)
-  (set-face-foreground 'company-preview-common "#4b5668")
-  (set-face-background 'company-preview nil))
 
-(use-package eshell-toggle
-  :bind ("C-M-'" . eshell-toggle)
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-run-command nil))
-
-(use-package vterm
-  :commands vterm
-  :config
-  (setq vterm-max-scrollback 10000))
+;;(use-package fish-completion
+;; :hook (eshell-mode . fish-completion-mode))
+ 
+;;(use-package eshell-toggle 
+;;  :bind ("C-M-'" . eshell-toggle)
+;;  :custom
+;;  (eshell-toggle-size-fraction 3)
+;;  (eshell-toggle-use-projectile-root t)
+; ; (eshell-toggle-run-command nil))
 
 
 ;; Don't let ediff break EXWM, keep it in one frame

@@ -144,6 +144,8 @@
     ffmpeg
     mpv
     nyxt
+    arandr
+    autorandr
   ];
 
   nixpkgs.config.allowUnfree = true;
