@@ -72,6 +72,10 @@
 
 (save-place-mode 1) 
 
+(defun efs/run-in-background (command)
+  (let ((command-parts (split-string command "[ ]+")))
+    (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
+
 (defun efs/set-wallpaper ()
   (interactive)
   ;; NOTE: You will need to update this to a valid background path!
@@ -125,16 +129,6 @@
 		     (interactive (list (read-shell-command "$ ")))
 		     (start-process-shell-command command nil command)))))
 
-
-(defun efs/run-in-background (command)
-  (let ((command-parts (split-string command "[ ]+")))
-    (apply #'call-process `(,(car command-parts) nil 0 nil ,@(cdr command-parts)))))
-
-(defun efs/set-wallpaper ()
-  (interactive)
-  ;; NOTE: You will need to update this to a valid background path!
-  (start-process-shell-command
-   "feh" nil  "feh --bg-scale /home/moses/Pictures/motivational-workout-conquer-m1f9vlaf12ukuaky.jpg"))
 
 (defun efs/exwm-init-hook ()
   ;; Make workspace 0 be the one where we land at startup
