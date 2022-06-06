@@ -55,7 +55,11 @@
   # Enable Docker
   virtualisation.docker.enable = true;
 
+  # Enable virtualbox
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "user-with-access-to-virtualbox" ];
 
+  
   # Enable the GNOME Desktop Environment.
   #services.xserver.displayManager.gdm.enable = true;
   #services.xserver.desktopManager.gnome.enable = true;
@@ -136,7 +140,6 @@
     tlp
     playerctl
     logseq
-    tdlib #using the unstable version in user env
     filezilla
     gnumake
     pkg-config
@@ -146,6 +149,7 @@
     nyxt
     arandr
     autorandr
+    bitwarden-cli
   ];
 
   nixpkgs.config.allowUnfree = true;

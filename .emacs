@@ -234,7 +234,7 @@
  '(custom-safe-themes
    '("47db50ff66e35d3a440485357fb6acb767c100e135ccdf459060407f8baea7b2" default))
  '(package-selected-packages
-   '(eshell dired-collapse dired-ranger dired-single dired-rainbow ivy-prescient company-prescient org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
+   '(yaml-mode eshell dired-collapse dired-ranger dired-single dired-rainbow ivy-prescient company-prescient org-roam mpv elfeed telega use-package-hydra undo-fu undo-tree nix-mode zzz-to-char nerdtab magit lsp-haskell haskell-mode desktop-environment gnus-desktop-notify org-mime dashboard undo-fu-session pdf-tools helm-lsp ormolu rainbow-delimiters evil-nerd-commenter projectile company treemacs-all-the-icons counsel swiper ivy which-key doom-themes exwm doom-modeline))
  '(pdf-misc-print-program-args '("-o media=A4" "-o fit-to-page"))
  '(pdf-misc-print-program-executable "/run/current-system/sw/bin/lpr"))
 (custom-set-faces
@@ -327,7 +327,11 @@
 (dolist (mode '(org-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 0))))
 
-
+(use-package ormolu
+ :hook (haskell-mode . ormolu-format-on-save-mode)
+ :bind
+ (:map haskell-mode-map
+   ("C-c r" . ormolu-format-buffer)))
 
 ;;Startup Dashboard
 (require 'dashboard)
@@ -432,6 +436,7 @@
 
         ;; networking
         ("https://www.reddit.com/r/networking.rss" networking)
+        ("https://feeds.packetpushers.net/packetpushersfatpipe" packetpushers)
 
         ;; os
         ("https://www.reddit.com/r/nixos.rss" nixos)
@@ -616,5 +621,8 @@ ediff-window-setup-function 'ediff-setup-windows-plain)
 ;; Make gc pauses faster by decreasing the threshold.
 (setq gc-cons-threshold (* 2 1000 1000))
 
+
+;; Save & restore sessions
+(desktop-save-mode 1)
 
 (exwm-enable)
