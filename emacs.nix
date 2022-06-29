@@ -3,13 +3,9 @@ This is a nix expression to build Emacs and some Emacs packages I like
 from source on any distribution where Nix is installed. This will install
 all the dependencies from the nixpkgs repository and build the binary files
 without interfering with the host distribution.
-
 To build the project, type the following from the current directory:
-
 $ nix-build emacs.nix
-
 To run the newly compiled executable:
-
 $ ./result/bin/emacs
 */
 { pkgs ? import <nixpkgs> {} }: 
@@ -27,6 +23,7 @@ in
    # undo-tree      # ; <C-x u> to show the undo tree
    # zoom-frm       # ; increase/decrease font size for all buffers %lt;C-x C-+>
    lsp-haskell
+   haskell-mode
    evil
    doom-modeline
    all-the-icons
@@ -38,7 +35,6 @@ in
    org-bullets
    company
    projectile
-   evil-nerd-commenter
    rainbow-delimiters
    ormolu
    reformatter
@@ -54,22 +50,9 @@ in
    perspective
    hydra
    elfeed
-   mpv
    org-roam
-   dired-rainbow
-   dired-ranger
-   dired-collapse
-   dired-single
-   all-the-icons-dired
    company-prescient
    ivy-prescient
-   docker
-   docker-tramp
-   vterm
-   eshell-toggle
-   esh-autosuggest
-   fish-completion
-   xterm-color
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
