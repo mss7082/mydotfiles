@@ -147,6 +147,8 @@
     light
     xclip
     authy
+    mpv
+    font-awesome
     dig
     brave
     git

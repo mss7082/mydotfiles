@@ -142,6 +142,12 @@
 (add-hook 'haskell-mode-hook #'lsp)
 (add-hook 'haskell-literate-mode-hook #'lsp)
 
+;; Enable evil mode
+(require 'evil)
+(evil-mode 1)
+(evilnc-default-hotkeys)
+(setq evil-undo-system 'undo-fu)
+
 (column-number-mode)
 
 ;; Enable line numbers for some modes

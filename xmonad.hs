@@ -14,6 +14,8 @@ import System.Exit
 import XMonad.Util.SpawnOnce
 import XMonad.Util.Run
 import Graphics.X11.ExtraTypes.XF86
+import XMonad.Actions.Volume
+import XMonad.Util.Dzen
 
 
 import qualified XMonad.StackSet as W
@@ -150,6 +152,14 @@ myTreeNavigation = M.fromList
 myNormalBorderColor  = "#dddddd"
 myFocusedBorderColor = "#ff0000"
 
+-- Volume Alerts
+alert = dzenConfig centered . show 
+centered =
+  onCurr (center 150 66)
+  >=> font "-*-helvetica-*-r-*-*-64-*-*-*-*-*-*-*"
+  >=> addArgs ["-fg", "#80c0ff"]
+  >=> addArgs ["-bg", "#000040"]
+
 ------------------------------------------------------------------------
 -- Key bindings. Add, modify or remove key bindings here.
 --
@@ -248,11 +258,17 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     ++
     -- Enable Multmedia volume keys
-    [((0, xF86XK_AudioRaiseVolume       ), spawn "pactl set-sink-volume 0 +1.5%")
-    ,((0, xF86XK_AudioLowerVolume       ), spawn "pactl set-sink-volume 0 -1.5%")
-    ,((0, xF86XK_AudioMute              ), spawn "pactl set-sink-mute 0 toggle")
+    -- [((0, xF86XK_AudioRaiseVolume       ), spawn "pactl set-sink-volume 0 +1.5%")
+    -- ,((0, xF86XK_AudioLowerVolume       ), spawn "pactl set-sink-volume 0 -1.5%")
+    -- ,((0, xF86XK_AudioMute              ), spawn "pactl set-sink-mute 0 toggle")
+    -- ]
+
+    [((0, xF86XK_AudioRaiseVolume       ), raiseVolume 4 >>= alert)
+    ,((0, xF86XK_AudioLowerVolume       ), lowerVolume 4 >>= alert)
     ]
 
+
+    
     ++
     -- TreeSelect Workspaces
     [((modm, xK_f), treeselectWorkspace myTreeConfig myWorkspaces W.greedyView)

@@ -53,6 +53,7 @@ in
    org-roam
    company-prescient
    ivy-prescient
+   evil-nerd-commenter
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
