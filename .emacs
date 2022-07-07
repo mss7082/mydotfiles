@@ -148,6 +148,9 @@
 (evilnc-default-hotkeys)
 (setq evil-undo-system 'undo-fu)
 
+;; (require 'evil-dvorak)
+;; (global-evil-dvorak-mode 1)
+
 (column-number-mode)
 
 ;; Enable line numbers for some modes
@@ -168,7 +171,7 @@
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 
-(add-to-list 'load-path "/nix/store/29drn9jg4riar14mw4ndpcw3iz0zrp2w-system-path/share/emacs/site-lisp/mu4e")
+(add-to-list 'load-path "/nix/store/xpl00jpdvwp5bxm6qmm41knf553n9hk0-mu-1.6.10/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
 ;; use mu4e for e-mail in emacs
 (setq mail-user-agent 'mu4e-user-agent)
@@ -348,6 +351,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(evil-undo-system 'undo-fu)
  '(package-selected-packages
    '(haskell haskell-mode all-th zerodark-theme yaml-mode which-key undo-fu-session telega super-save rainbow-delimiters projectile perspective pdf-tools ormolu org-roam org-mime org-bullets nix-mode nameless magit lsp-ui lsp-haskell ivy-prescient hydra helm-lsp evil elfeed doom-themes doom-modeline dashboard counsel company-prescient beacon auctex)))
 (custom-set-faces

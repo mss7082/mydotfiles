@@ -36,6 +36,9 @@
     "Searching..." = {
       pskRaw = "b8ea9095abc9bce69d3d786b06d0defcac891247df7e1f584ca1b9c02bf37780";
     };
+    "SurfaceDuoAP_4308" = {
+      pskRaw = "cc52450f22b152135dd4d3101c3ec30a276697c6edbfe34cd05d5f092c57790b";
+    };
   };
 
   # Enable networking
@@ -73,6 +76,16 @@
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
+
+  # Enable Battery Optimizer
+  services.tlp = {
+    enable = true;
+    settings = {
+      CPU_SCALING_GOVERNOR_ON_AC = "powersave";
+      CPU_SCALING_GOVERNOR_ON_BAT = "powersave";
+     };
+   };
+      
 
   # Enable Bluetooth Services
   services.blueman.enable = true;
@@ -151,9 +164,11 @@
     font-awesome
     dig
     brave
+    realvnc-vnc-viewer
     git
     alacritty
     bitwarden
+    bitwarden-cli
     discord
     qutebrowser
     vlc
@@ -168,6 +183,10 @@
     ormolu
     dunst
     dmenu
+    arandr
+    autorandr
+    cointop
+    dig
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

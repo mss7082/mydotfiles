@@ -108,7 +108,7 @@ myWorkspaces = [ Node "Web"       -- for everyday activity's
 
 -- Tree Workspaces config 
 myTreeConfig = TSConfig { ts_hidechildren = True
-                           , ts_background   = 0xc0c0c0c0
+                           , ts_background   = 0x00000000
                            , ts_font         = "xft:Sans-16"
                            , ts_node         = (0xff000000, 0xff50d0db)
                            , ts_nodealt      = (0xff000000, 0xff10b8d6)

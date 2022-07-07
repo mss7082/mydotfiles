@@ -106,7 +106,7 @@
     max_icon_size = 88
 
     # Paths to default icons.
-    icon_path = /nix/store/434pqnp5q60nbb39npcxml3ymjvdqxw3-adwaita-icon-theme-41.0/share/icons/Adwaita/96x96/status:/nix/store/434pqnp5q60nbb39npcxml3ymjvdqxw3-adwaita-icon-theme-41.0/share/icons/Adwaita/96x96/emblems
+    icon_path = /nix/store/v8789rfbg45gdyzkngk0rf1yiqj13pbi-adwaita-icon-theme-42.0/share/icons/Adwaita/96x96/status:/nix/store/v8789rfbg45gdyzkngk0rf1yiqj13pbi-adwaita-icon-theme-42.0/share/icons/Adwaita/96x96/emblems
 
     ### History ###
 

@@ -25,6 +25,7 @@ in
    lsp-haskell
    haskell-mode
    evil
+   evil-dvorak
    doom-modeline
    all-the-icons
    doom-themes
@@ -43,6 +44,7 @@ in
    yaml-mode
    nix-mode
    undo-fu-session
+   undo-fu
    dashboard
    org-mime
    telega
