@@ -160,6 +160,8 @@
     light
     xclip
     authy
+    gnupg
+    pinentry
     mpv
     font-awesome
     dig
@@ -219,6 +221,10 @@
   #Enable gnome-keyring
   services.gnome.gnome-keyring.enable = true;
   security.pam.services.lightdm.enableGnomeKeyring = true; 
+
+  # Enable PAM_GNUPG
+  security.pam.services.lightdm.gnupg.enable = true;
+
 
   #Enable xdg desktop Integration for flatpak
   xdg = {

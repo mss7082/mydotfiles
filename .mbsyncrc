@@ -1,0 +1,53 @@
+IMAPAccount protonmail
+Host 127.0.0.1
+Port 1143
+User mssokabi@protonmail.com
+#Here you enter a command to retrieve your password
+PassCmd "gpg -q -d ~/.authinfo.gpg | awk 'FNR == 2 {print $6}'"
+#PassCmd "cat ~/.protonBridgePass"
+SSLType NONE
+#SSLVersions SSLv3
+#SSLVersions SSLv3
+#CertificateFile /etc/ssl/certs/ca-bundle.crt
+ 
+IMAPStore pm-remote
+Account protonmail
+ 
+MaildirStore pm-local
+Path ~/.mail/
+Inbox ~/.mail/INBOX/
+ 
+Channel pm-inbox
+Far :pm-remote:
+Near :pm-local:
+Patterns "INBOX"
+Create Both
+Expunge Both
+SyncState *
+ 
+Channel pm-sent
+Far :pm-remote:"Sent"
+Near :pm-local:"sent"
+Create Both
+Expunge Both
+SyncState *
+ 
+Channel pm-trash
+Far :pm-remote:"Trash"
+Near :pm-local:"trash"
+Create Both
+Expunge Both
+SyncState *
+ 
+Channel pm-spam
+Far :pm-remote:"Spam"
+Near :pm-local:"spam"
+Create Both
+Expunge Both
+SyncState *
+ 
+Group protonmail
+Channel pm-inbox
+Channel pm-sent
+Channel pm-trash
+Channel pm-spam
