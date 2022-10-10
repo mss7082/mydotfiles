@@ -22,6 +22,7 @@
 ;; Set up the visible bell
 (setq visible-bell t)
 
+(setq auth-sources '((:source "~/.authinfo.gpg")))
 
 (setq display-buffer-base-action
       '(display-buffer-reuse-mode-window
@@ -171,27 +172,28 @@
 (require 'dashboard)
 (dashboard-setup-startup-hook)
 
-(add-to-list 'load-path "/nix/store/xpl00jpdvwp5bxm6qmm41knf553n9hk0-mu-1.6.10/share/emacs/site-lisp/mu4e")
+(add-to-list 'load-path "/nix/store/xpl00jpdvwp5bxm6qmm41knf553n9hk0-mu-1.6.10/share/emacs/site-lisp/")
 (require 'mu4e)
 ;; use mu4e for e-mail in emacs
 (setq mail-user-agent 'mu4e-user-agent)
 (setq mu4e-change-filenames-when-moving t ; avoid sync conflicts
-      mu4e-update-interval (* 10 60) ; check mail 10 minutes
+      mu4e-update-interval (* 2 60) ; check mail 2 minutes
       mu4e-compose-format-flowed t ; re-flow mail so it's not hard wrapped
       mu4e-get-mail-command "mbsync -a"
-      mu4e-maildir "~/mail/proton")
+      mu4e-maildir "~/.mail")
 
-(setq mu4e-drafts-folder "/Drafts"
-      mu4e-sent-folder   "/Sent"
-      mu4e-refile-folder "/Archive"
-      mu4e-trash-folder  "/Trash")
+(setq mu4e-drafts-folder "/drafts"
+      mu4e-sent-folder   "/sent"
+      mu4e-refile-folder "/archive"
+      mu4e-attachment-dir "~/Downloads"
+      mu4e-trash-folder  "/trash")
 
 (setq mu4e-maildir-shortcuts
-      '(("/inbox"     . ?i)
-	("/Sent"      . ?s)
-	("/Trash"     . ?t)
-	("/Drafts"    . ?d)
-	("/Archive"  . ?a)))
+      '(("/INBOX"     . ?i)
+	("/sent"      . ?s)
+	("/trash"     . ?t)
+	("/drafts"    . ?d)
+	("/archive"  . ?a)))
 
 ;;(setq message-send-mail-function 'smtpmail-send-it
 ;;      auth-sources '("~/.authinfo") ;need to use gpg version but only local smtp stored for now
@@ -202,6 +204,7 @@
 (setq send-mail-function 'smtpmail-send-it)
 ;; Send mail using SMTP via mail.example.org.
 (setq smtpmail-smtp-server "localhost")
+(setq smtpmail-auth-credentials "~/.authinfo.gpg")
 ;; Send mail using SMTP on the mail submission port 587.
 (setq smtpmail-smtp-service 1025)
 (setq smtpmail-stream-type 'starttls)
@@ -210,9 +213,9 @@
 ;; the non-mu4e-* stuff is inherited from emacs/message-mode
 (setq mu4e-compose-reply-to-address "moses@sokabi.me"
       user-mail-address "moses@sokabi.me"
-      user-full-name  "Moses S.")
+      user-full-name  "Moses Ṣodipo Ṣokabi")
 (setq mu4e-compose-signature
-   "Regards,\nMoses\n")
+   "Regards,\nM.S\n")
 
 ;; don't keep message buffers around
 (setq message-kill-buffer-on-exit t)
@@ -344,8 +347,15 @@
 
 (define-key global-map (kbd "C-c a") #'org-agenda)
 
+;; Tabnine
+;; Trigger completion immediately.
+(setq company-idle-delay 0)
+
+;; Number the candidates (use M-1, M-2 etc to select completions).
+(setq company-show-numbers t)
+
 ;; Save & restore sessions
-(desktop-save-mode 1)
+;;(desktop-save-mode 1)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

@@ -96,6 +96,10 @@
     };
   };  
 
+  #Enable Scanner
+  hardware.sane.enable = true;
+  services.avahi.enable = true;
+  services.avahi.nssmdns = true; 
 
   # Enable sound with pipewire.
   sound.enable = true;
@@ -106,6 +110,14 @@
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+    config.pipewire = {
+      "context.properties" = {
+      "default.clock.rate" = 24000;
+      "default.clock.quantum" = 16;
+      "default.clock.min-quantum" = 16;
+      "default.clock.max-quantum" = 16;
+      };
+    };
     # If you want to use JACK applications, uncomment this
     #jack.enable = true;
 
@@ -134,7 +146,7 @@
       firefox
       kate
       filezilla
-    #  thunderbird
+      thunderbird
     ];
   };
 
@@ -153,9 +165,13 @@
     wget
     xmobar
     nitrogen
+    #vscode
     picom
     blueman
     bluez
+    unzip
+    inetutils
+    wireshark-qt
     maim
     light
     xclip
@@ -171,7 +187,6 @@
     alacritty
     bitwarden
     bitwarden-cli
-    discord
     qutebrowser
     vlc
     ledger-live-desktop
@@ -225,6 +240,8 @@
   # Enable PAM_GNUPG
   security.pam.services.lightdm.gnupg.enable = true;
 
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "moses" ];
 
   #Enable xdg desktop Integration for flatpak
   xdg = {

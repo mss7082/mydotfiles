@@ -99,7 +99,9 @@ myWorkspaces = [ Node "Web"       -- for everyday activity's
                    [ Node "Browser" []   --  with 4 extra sub-workspaces, for even more activity's
                    , Node "Chat" []
                    , Node "Email" []
-                   , Node "Ada" []
+                   , Node "Ada" [
+                       Node "Trade" []
+                       ]
                    ]
                , Node "Dev" []
                , Node "Networking" [] -- for all your networking needs
@@ -142,6 +144,7 @@ myTreeNavigation = M.fromList
     , ((0, xK_c),      moveTo ["Web", "Chat"])
     , ((0, xK_e),      moveTo ["Web", "Email"])
     , ((0, xK_a),      moveTo ["Web", "Ada"])
+    , ((0, xK_z),      moveTo ["Web", "Ada", "Trade"])
     , ((0, xK_n),      moveTo ["Networking"])
     , ((0, xK_d),      moveTo ["Dev"])
     , ((0, xK_m),      moveTo ["Misc"])
@@ -334,6 +337,13 @@ grid     = renamed [Replace "grid"]
            $ mySpacing 4
            $ mkToggle (single MIRROR)
            $ Grid (16/10)
+mirror     = Mirror (renamed [Replace "mirror"]
+           $ smartBorders
+           $ windowNavigation
+           $ subLayout [] (smartBorders Simplest)
+           $ limitWindows 12
+           $ mySpacing 8
+           $ ResizableTall 1 (3/100) (1/2) [])
 
 
 -- You can specify and transform your layouts by modifying these values.
@@ -349,6 +359,7 @@ myLayout = avoidStruts $ mouseResize $ windowArrange
                $ mkToggle (NBFULL ?? NOBORDERS ?? EOT) myDefaultLayout
              where
                myDefaultLayout =     withBorder myBorderWidth tall
+                                 ||| mirror
                                  ||| grid
                                  ||| noBorders monocle
 

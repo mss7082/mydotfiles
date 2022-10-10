@@ -6,7 +6,7 @@ output HDMI-2
 off
 output DP-1
 crtc 1
-mode 3840x1080
+mode 1920x1080
 pos 0x0
 rate 60.00
 x-prop-audio auto
@@ -17,7 +17,7 @@ x-prop-non_desktop 0
 output eDP-1
 crtc 0
 mode 1920x1080
-pos 3840x0
+pos 0x1080
 primary
 rate 60.03
 x-prop-broadcast_rgb Automatic
