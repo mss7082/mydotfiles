@@ -147,6 +147,7 @@
       kate
       filezilla
       thunderbird
+      vscode
     ];
   };
 
@@ -242,6 +243,21 @@
 
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "moses" ];
+
+  # Binary Cache for Haskell.nix
+  #nix.settings.trusted-public-keys = [
+  #  "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="
+  #];
+  #nix.settings.substituters = [
+  #  "https://cache.iog.io"
+  #];
+
+  nix.settings.experimental-features = [ "nix-command" ];
+
+  nix = {
+  	binaryCaches          = [ "https://hydra.iohk.io" "https://iohk.cachix.org" ];
+  	binaryCachePublicKeys = [ "hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" "iohk.cachix.org-1:DpRUyj7h7V830dp/i6Nti+NEO2/nhblbov/8MW7Rqoo=" ];
+	};
 
   #Enable xdg desktop Integration for flatpak
   xdg = {

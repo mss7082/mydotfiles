@@ -23,6 +23,7 @@ in
    # undo-tree      # ; <C-x u> to show the undo tree
    # zoom-frm       # ; increase/decrease font size for all buffers %lt;C-x C-+>
    lsp-haskell
+   neotree
    haskell-mode
    evil
    evil-dvorak
@@ -33,6 +34,7 @@ in
    ivy
    counsel
    swiper
+   direnv
    org-bullets
    company
    projectile
@@ -56,6 +58,8 @@ in
    company-prescient
    ivy-prescient
    evil-nerd-commenter
+   company-tabnine
+   nix-haskell-mode
    
   ]) ++ (with epkgs.elpaPackages; [ 
     auctex         # ; LaTeX mode
